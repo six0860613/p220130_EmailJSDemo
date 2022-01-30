@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+        integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Features</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Pricing</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-8">
+                <h2>意見回饋表單</h2>
+                <form id="replyForm" name="replyForm">
+                    <div class="form-group">
+                        <label for="replyName">回饋姓名</label>
+                        <input type="text" class="form-control" id="replyName" name="replyName" placeholder="輸入姓名">
+                    </div>
+                    <div class="form-group">
+                        <label for="replyTheme">回饋主題</label>
+                        <select class="form-control" id="replyTheme" name="replyTheme">
+                            <option value="">選擇主題</option>
+                            <option value="AAA">AAA</option>
+                            <option value="BBB">BBB</option>
+                            <option value="CCC">CCC</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="replyMessage">回饋內容</label>
+                        <textarea class="form-control" id="replyMessage" name="replyMessage" rows="5"></textarea>
+                    </div>
+                    <button type="button" id="clearBtn" class="btn btn-secondary">清除</button>
+                    <button type="button" id="sendBtn" class="btn btn-success">送出</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+        integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
+        crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js">
+    </script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        (function () {
+            emailjs.init("user_iL7iQsGVPNYz7PBg5akk1");
+        })();
+        const clearForm = () => {
+            $('#replyName').val('');
+            $('#replyTheme').val('');
+            $('#replyMessage').val('');
+        };
+
+        $('#sendBtn').on('click', function () {
+            const fd = new FormData(replyForm);
+            console.log('1', $('#replyName').val());
+            console.log('2', $('#replyTheme').val());
+            console.log('3', $('#replyMessage').val());
+            if ($('#replyName').val() && $('#replyTheme').val() && $('#replyMessage').val()) {
+
+                Swal.fire({
+                    title: '確定送出回饋表單?',
+                    text: "送出後將無法再修改!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: '取消',
+                    confirmButtonText: '送出'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        emailjs.sendForm('service_gwt1m09', 'template_uil2x1v', '#replyForm')
+                            .then((response) => {
+                                console.log('SUCCESS!', response.status, response.text);
+                                clearForm();
+                                Swal.fire(
+                                    '送出成功!',
+                                    '您的回饋已成功寄出',
+                                    'success'
+                                );
+                            }, (error) => {
+                                console.log('FAILED...', error);
+                            });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: '無法送出',
+                    text: '請將欄位填寫完整後再送出',
+                    icon: 'error'
+                });
+            }
+        });
+
+        $('#clearBtn').on('click', function () {
+            clearForm();
+        });
+
+    </script>
+</body>
+
+</html>
